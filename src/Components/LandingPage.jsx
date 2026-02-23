@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react';  //import
 import { Building2, User, House } from 'lucide-react'; // This is the missing piece!
 import '../CSS/LandingPage.css'; 
 

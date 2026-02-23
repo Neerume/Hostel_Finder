@@ -1,7 +1,7 @@
 const express = require("express");    //express helps to create backend apis easily.
 const cors = require("cors");      //to allow front end to talk to backend
  
-const app = express();
+const app = express();     //call
 const db = require("./dbConnection");
 
 //Middleware
