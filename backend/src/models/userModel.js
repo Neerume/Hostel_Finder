@@ -18,7 +18,25 @@ const createUser = async (userData) => {
     return result;
 };
 
+const savePasswordResetOtp = async (email, otp, expiresAt) => {
+    const [result] = await pool.query(
+        `UPDATE users SET otp_code = ?, otp_expires_at = ? WHERE email = ?`,
+        [otp, expiresAt, email]
+    );
+    return result;
+};
+
+const updatePassword = async (email, passwordHash) => {
+    const [result] = await pool.query(
+        `UPDATE users SET password_hash = ? WHERE email = ?`,
+        [passwordHash, email]
+    );
+    return result;
+};
+
 module.exports = {
     getUserByEmail,
-    createUser
+    createUser,
+    savePasswordResetOtp,
+    updatePassword
 };

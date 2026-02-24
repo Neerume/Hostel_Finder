@@ -74,9 +74,38 @@ const authenticateOwnerEmailPassword = async (email, password) => {
     return owner;
 };
 
+const requestPasswordReset = async (email) => {
+    // Determine if it's a user or owner
+    let account = await userModel.getUserByEmail(email);
+    let type = 'user';
+
+    if (!account) {
+        account = await ownerModel.getOwnerByEmail(email);
+        type = 'owner';
+    }
+
+    if (!account) {
+        // Return without error to prevent email enumeration
+        return;
+    }
+
+    // Generate random 8 character alphanumeric password
+    const newPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    if (type === 'user') {
+        await userModel.updatePassword(email, hashedPassword);
+    } else {
+        await ownerModel.updatePassword(email, hashedPassword);
+    }
+
+    await emailService.sendNewPasswordEmail(email, newPassword);
+};
+
 module.exports = {
     createUser,
     createOwner,
     authenticateUserEmailPassword,
-    authenticateOwnerEmailPassword
+    authenticateOwnerEmailPassword,
+    requestPasswordReset
 };

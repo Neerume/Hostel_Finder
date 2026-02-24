@@ -78,9 +78,17 @@ const verifyOtp = catchAsync(async (req, res, next) => {
 });
 
 const forgotPassword = catchAsync(async (req, res, next) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return next(new AppError('Please provide an email address.', 400));
+    }
+
+    await authService.requestPasswordReset(email);
+
     res.status(200).json({
         status: 'success',
-        message: 'Password reset instructions sent (placeholder implementation)'
+        message: 'Password reset instructions sent to your email.'
     });
 });
 

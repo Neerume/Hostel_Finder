@@ -18,7 +18,25 @@ const createOwner = async (ownerData) => {
     return result;
 };
 
+const savePasswordResetOtp = async (email, otp, expiresAt) => {
+    const [result] = await pool.query(
+        `UPDATE owners SET otp_code = ?, otp_expires_at = ? WHERE email = ?`,
+        [otp, expiresAt, email]
+    );
+    return result;
+};
+
+const updatePassword = async (email, passwordHash) => {
+    const [result] = await pool.query(
+        `UPDATE owners SET password_hash = ? WHERE email = ?`,
+        [passwordHash, email]
+    );
+    return result;
+};
+
 module.exports = {
     getOwnerByEmail,
-    createOwner
+    createOwner,
+    savePasswordResetOtp,
+    updatePassword
 };

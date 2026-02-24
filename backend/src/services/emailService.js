@@ -36,6 +36,32 @@ const sendOTP = async (to, otp) => {
     }
 };
 
+const sendNewPasswordEmail = async (to, newPassword) => {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_FROM,
+            to,
+            subject: 'New Password - Hostel Finder',
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Your Password Has Been Reset</h2>
+                    <p>You requested a password reset. Here is your new temporary password. Please log in and change it as soon as possible:</p>
+                    <h3 style="background-color: #f4f4f4; padding: 10px; display: inline-block; letter-spacing: 2px; font-size: 24px;">${newPassword}</h3>
+                    <p>If you did not request a password reset, please secure your account immediately.</p>
+                </div>
+            `
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('New password email sent: %s', info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending new password email:', error);
+        throw new Error('Could not send new password email. Please try again later.');
+    }
+};
+
 module.exports = {
-    sendOTP
+    sendOTP,
+    sendNewPasswordEmail
 };
