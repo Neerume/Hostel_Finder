@@ -1,0 +1,86 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Building2, ShieldCheck, CalendarCheck, LayoutDashboard } from 'lucide-react';
+
+const Landing = () => {
+    return (
+        <div className="landing-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            {/* Navbar equivalent for landing */}
+            <header style={{ padding: 'var(--spacing-4) var(--spacing-8)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '1.25rem', color: 'var(--primary)' }}>
+                    <Building2 size={28} />
+                    HostelFinder
+                </div>
+                <div style={{ display: 'flex', gap: 'var(--spacing-4)' }}>
+                    <Link to="/login/user" className="btn btn-outline">User Login</Link>
+                    <Link to="/login/owner" className="btn btn-primary">Owner Login</Link>
+                </div>
+            </header>
+
+            {/* Hero Section */}
+            <main style={{ flex: 1 }}>
+                <section style={{ textAlign: 'center', padding: '80px 20px', background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)', color: 'white' }}>
+                    <div className="mx-auto" style={{ maxWidth: '800px' }}>
+                        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: 'var(--spacing-4)', lineHeight: 1.2 }}>Find and Manage Hostels Effortlessly</h1>
+                        <p style={{ fontSize: '1.25rem', opacity: 0.9, marginBottom: 'var(--spacing-8)', maxWidth: '600px', margin: '0 auto var(--spacing-8)' }}>
+                            The ultimate platform for students to find affordable rooms and for owners to manage their properties, bookings, and communication in one place.
+                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-4)' }}>
+                            <Link to="/login/user" className="btn" style={{ backgroundColor: 'white', color: 'var(--primary)', padding: '12px 24px', fontSize: '1.1rem' }}>Find a Room</Link>
+                            <Link to="/login/owner" className="btn btn-outline" style={{ borderColor: 'white', color: 'white', padding: '12px 24px', fontSize: '1.1rem' }}>List your Property</Link>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Features Section */}
+                <section style={{ padding: '80px 20px', maxWidth: '1200px', margin: '0 auto' }}>
+                    <h2 className="text-center mb-8" style={{ fontSize: '2rem' }}>Why choose HostelFinder?</h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-6)' }}>
+
+                        <div className="card text-center" style={{ padding: 'var(--spacing-6)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', color: 'var(--primary)', marginBottom: 'var(--spacing-4)' }}>
+                                <Building2 size={48} />
+                            </div>
+                            <h3 className="mb-2">Affordable Rooms</h3>
+                            <p className="text-muted">Browse through hundreds of budget-friendly accommodations tailored for students.</p>
+                        </div>
+
+                        <div className="card text-center" style={{ padding: 'var(--spacing-6)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', color: 'var(--secondary)', marginBottom: 'var(--spacing-4)' }}>
+                                <ShieldCheck size={48} />
+                            </div>
+                            <h3 className="mb-2">Verified Listings</h3>
+                            <p className="text-muted">Every hostel is verified to ensure safety, quality, and accurate information.</p>
+                        </div>
+
+                        <div className="card text-center" style={{ padding: 'var(--spacing-6)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', color: '#f59e0b', marginBottom: 'var(--spacing-4)' }}>
+                                <CalendarCheck size={48} />
+                            </div>
+                            <h3 className="mb-2">Easy Booking</h3>
+                            <p className="text-muted">Book a visit or reserve your room instantly with just a few clicks.</p>
+                        </div>
+
+                        <div className="card text-center" style={{ padding: 'var(--spacing-6)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', color: '#8b5cf6', marginBottom: 'var(--spacing-4)' }}>
+                                <LayoutDashboard size={48} />
+                            </div>
+                            <h3 className="mb-2">Owner Dashboard</h3>
+                            <p className="text-muted">Comprehensive tools for owners to track bookings, availability, and revenue.</p>
+                        </div>
+
+                    </div>
+                </section>
+            </main>
+
+            {/* Footer */}
+            <footer style={{ background: 'var(--surface)', padding: 'var(--spacing-6)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
+                <div style={{ color: 'var(--text-secondary)' }}>
+                    &copy; {new Date().getFullYear()} HostelFinder. All rights reserved.
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+export default Landing;
