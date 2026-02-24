@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Building, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
     const { type } = useParams(); // 'user' or 'owner'
     const navigate = useNavigate();
+    const { registerUser, registerOwner } = useAuth();
     const isOwner = type === 'owner';
+    const [error, setError] = useState('');
 
     const [formData, setFormData] = useState({
         fullname: '',
@@ -19,16 +22,35 @@ const Register = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+
         if (formData.password !== formData.confirmPassword) {
-            alert("Passwords don't match");
+            setError("Passwords don't match");
             return;
         }
-        // Dummy submit
-        console.log(`Registering ${type}:`, formData);
-        // Redirect to OTP
-        navigate(`/verify-otp?type=${type}&email=${formData.email}`);
+
+        try {
+            if (isOwner) {
+                await registerOwner({
+                    fullname: formData.fullname,
+                    email: formData.email,
+                    password: formData.password,
+                    hostelName: formData.hostelName
+                });
+            } else {
+                await registerUser({
+                    fullname: formData.fullname,
+                    email: formData.email,
+                    password: formData.password
+                });
+            }
+            // Redirect to OTP
+            navigate(`/verify-otp?type=${type}&email=${formData.email}`);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Registration failed. Please try again.');
+        }
     };
 
     return (
@@ -45,6 +67,8 @@ const Register = () => {
                         Create your account to get started.
                     </p>
                 </div>
+
+                {error && <div style={{ color: '#ef4444', marginBottom: 'var(--spacing-4)', textAlign: 'center', fontSize: '0.875rem', padding: '8px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '4px' }}>{error}</div>}
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">

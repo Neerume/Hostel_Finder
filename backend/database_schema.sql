@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS hostel_finder;
+USE hostel_finder;
+
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -62,9 +65,9 @@ CREATE TABLE IF NOT EXISTS bookings (
 );
 
 -- Indexes for performance improvements
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_owners_email ON owners(email);
-CREATE INDEX IF NOT EXISTS idx_hostels_owner_id ON hostels(owner_id);
-CREATE INDEX IF NOT EXISTS idx_bookings_user_id ON bookings(user_id);
-CREATE INDEX IF NOT EXISTS idx_bookings_hostel_id ON bookings(hostel_id);
-CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_owners_email ON owners(email);
+CREATE INDEX idx_hostels_owner_id ON hostels(owner_id);
+CREATE INDEX idx_bookings_user_id ON bookings(user_id);
+CREATE INDEX idx_bookings_hostel_id ON bookings(hostel_id);
+CREATE INDEX idx_bookings_status ON bookings(status);

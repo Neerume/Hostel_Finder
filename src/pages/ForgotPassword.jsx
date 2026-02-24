@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Mail, ArrowLeft, KeyRound } from 'lucide-react';
+import api from '../utils/api';
 
 const ForgotPassword = () => {
     const [searchParams] = useSearchParams();
@@ -8,11 +9,17 @@ const ForgotPassword = () => {
 
     const [email, setEmail] = useState('');
     const [isSent, setIsSent] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Resetting password for:', email);
-        setIsSent(true);
+        setError('');
+        try {
+            await api.post('/auth/forgot-password', { email });
+            setIsSent(true);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to send reset link. Please try again.');
+        }
     };
 
     return (
@@ -36,6 +43,8 @@ const ForgotPassword = () => {
                             : 'Enter your email address to receive a temporary password.'}
                     </p>
                 </div>
+
+                {error && <div style={{ color: '#ef4444', marginBottom: 'var(--spacing-4)', textAlign: 'center', fontSize: '0.875rem', padding: '8px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '4px' }}>{error}</div>}
 
                 {!isSent ? (
                     <form onSubmit={handleSubmit}>

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
+import api from '../utils/api';
 
 const VerifyOTP = () => {
     const [searchParams] = useSearchParams();
@@ -9,6 +10,7 @@ const VerifyOTP = () => {
     const type = searchParams.get('type') || 'user';
 
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
+    const [error, setError] = useState('');
     const inputRefs = useRef([]);
 
     const handleChange = (index, e) => {
@@ -33,18 +35,23 @@ const VerifyOTP = () => {
         }
     };
 
-    const handleVerify = (e) => {
+    const handleVerify = async (e) => {
         e.preventDefault();
+        setError('');
+
         const otpValue = otp.join('');
         if (otpValue.length < 6) {
-            alert('Please enter a valid 6-digit OTP');
+            setError('Please enter a valid 6-digit OTP');
             return;
         }
 
-        console.log('Verifying OTP:', otpValue);
-
-        // Redirect to login after successful verification
-        navigate(`/login/${type}`);
+        try {
+            await api.post('/auth/verify-otp', { email, otp: otpValue });
+            // Redirect to login after successful verification
+            navigate(`/login/${type}`);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Verification failed. Please try again.');
+        }
     };
 
     return (
@@ -57,6 +64,8 @@ const VerifyOTP = () => {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: 'var(--spacing-6)' }}>
                     Enter the 6-digit OTP sent to <br /><strong>{email}</strong>
                 </p>
+
+                {error && <div style={{ color: '#ef4444', marginBottom: 'var(--spacing-4)', textAlign: 'center', fontSize: '0.875rem', padding: '8px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '4px' }}>{error}</div>}
 
                 <form onSubmit={handleVerify}>
                     <div className="otp-container">

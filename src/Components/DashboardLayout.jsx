@@ -11,6 +11,7 @@ import {
     PlusCircle,
     X
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const SidebarItem = ({ to, icon, label, onClick }) => (
     <NavLink
@@ -27,6 +28,7 @@ const SidebarItem = ({ to, icon, label, onClick }) => (
 const DashboardLayout = ({ role }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
+    const { logout, user } = useAuth();
 
     // Close sidebar on route change on mobile
     useEffect(() => {
@@ -38,7 +40,7 @@ const DashboardLayout = ({ role }) => {
     };
 
     const handleLogout = () => {
-        // Dummy logout
+        logout();
         navigate('/');
     };
 
@@ -120,7 +122,7 @@ const DashboardLayout = ({ role }) => {
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                            {role === 'owner' ? 'OW' : 'US'}
+                            {user?.fullname ? user.fullname.substring(0, 2).toUpperCase() : (role === 'owner' ? 'OW' : 'US')}
                         </div>
                     </div>
                 </header>

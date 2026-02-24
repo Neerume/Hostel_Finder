@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, ArrowLeft } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const { type } = useParams(); // 'user' or 'owner'
     const navigate = useNavigate();
+    const { loginUser, loginOwner } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const isOwner = type === 'owner';
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Dummy login logic
-        console.log(`Logging in ${isOwner ? 'Owner' : 'User'}:`, email);
+        setError('');
 
-        // Redirect to respective dashboard
-        if (isOwner) {
-            navigate('/owner/dashboard');
-        } else {
-            navigate('/user/dashboard');
+        try {
+            if (isOwner) {
+                await loginOwner(email, password);
+                navigate('/owner/dashboard');
+            } else {
+                await loginUser(email, password);
+                navigate('/user/dashboard');
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
         }
     };
 
@@ -37,6 +44,8 @@ const Login = () => {
                         Welcome back! Please enter your details.
                     </p>
                 </div>
+
+                {error && <div style={{ color: '#ef4444', marginBottom: 'var(--spacing-4)', textAlign: 'center', fontSize: '0.875rem', padding: '8px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '4px' }}>{error}</div>}
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">

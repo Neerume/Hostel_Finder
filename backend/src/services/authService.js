@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const userModel = require('../models/userModel');
 const ownerModel = require('../models/ownerModel');
 const AppError = require('../utils/appError');
-// const emailService = require('./emailService'); // Will be implemented in the future
+const emailService = require('./emailService');
 
 const createUser = async (userData) => {
     if (await userModel.getUserByEmail(userData.email)) {
@@ -25,7 +25,7 @@ const createUser = async (userData) => {
     });
 
     // Send email with OTP here
-    // await emailService.sendOTP(userData.email, otp);
+    await emailService.sendOTP(userData.email, otp);
 
     return { user_id: result.insertId, email: userData.email };
 };
@@ -47,7 +47,7 @@ const createOwner = async (ownerData) => {
         otp_expires_at
     });
 
-    // await emailService.sendOTP(ownerData.email, otp);
+    await emailService.sendOTP(ownerData.email, otp);
 
     return { owner_id: result.insertId, email: ownerData.email };
 };
