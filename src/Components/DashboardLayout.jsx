@@ -26,14 +26,9 @@ const SidebarItem = ({ to, icon, label, onClick }) => (
 );
 
 const DashboardLayout = ({ role }) => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const navigate = useNavigate();
     const { logout, user } = useAuth();
-
-    // Close sidebar on route change on mobile
-    useEffect(() => {
-        setIsSidebarOpen(false);
-    }, []);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -46,7 +41,6 @@ const DashboardLayout = ({ role }) => {
 
     const userLinks = [
         { to: '/user/dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
-        // Mock links since we don't have separate pages for these yet, but dashboard has the list
         { to: '/user/profile', icon: <User size={20} />, label: 'Edit Profile' },
     ];
 
@@ -75,9 +69,6 @@ const DashboardLayout = ({ role }) => {
                         <Building2 size={24} />
                         HostelFinder
                     </div>
-                    <button className="md:hidden" onClick={toggleSidebar} style={{ display: 'block' }}>
-                        <X size={24} />
-                    </button>
                 </div>
 
                 <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -87,7 +78,10 @@ const DashboardLayout = ({ role }) => {
                             to={link.to}
                             icon={link.icon}
                             label={link.label}
-                            onClick={() => setIsSidebarOpen(false)}
+                            onClick={() => {
+                                // On mobile, we might want to close it automatically after navigation
+                                if (window.innerWidth <= 768) setIsSidebarOpen(false);
+                            }}
                         />
                     ))}
                 </nav>
@@ -105,29 +99,37 @@ const DashboardLayout = ({ role }) => {
             </aside>
 
             {/* Main Content */}
-            <main className="main-content">
+            <main className={`main-content ${!isSidebarOpen ? 'expanded' : ''}`}>
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-6)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-                        <button
-                            onClick={toggleSidebar}
-                            style={{ display: 'block' }}
-                            className="mobile-menu-btn"
-                        >
-                            <Menu size={24} />
-                        </button>
-                        <h1 style={{ fontSize: '1.5rem', margin: 0 }}>
-                            {role === 'owner' ? 'Owner Portal' : 'Student Portal'}
-                        </h1>
-                    </div>
+                    <h1 style={{ fontSize: '1.5rem', margin: 0 }}>
+                        {role === 'owner' ? 'Owner Portal' : 'Student Portal'}
+                    </h1>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                            {user?.fullname ? user.fullname.substring(0, 2).toUpperCase() : (role === 'owner' ? 'OW' : 'US')}
-                        </div>
+                        <button
+                            onClick={toggleSidebar}
+                            title="Toggle Menu"
+                            style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                background: 'var(--primary)',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 'bold',
+                                transition: 'transform 0.2s',
+                                cursor: 'pointer'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            {user?.fullname ? user.fullname.substring(0, 1).toUpperCase() : (role === 'owner' ? 'O' : 'U')}
+                        </button>
                     </div>
                 </header>
 
-                {/* Page Content Rendering */}
                 <div className="page-content" style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
                     <Outlet />
                 </div>

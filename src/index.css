@@ -280,8 +280,11 @@ button {
   flex: 1;
   padding: var(--spacing-6) var(--spacing-8);
   margin-left: 250px;
-  /* Assuming fixed sidebar */
-  transition: margin-left 0.3s;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.main-content.expanded {
+  margin-left: 0;
 }
 
 @media (max-width: 768px) {
@@ -308,12 +311,12 @@ button {
 }
 
 .sidebar.mobile-hidden {
-  transform: translateX(-100%);
+  transform: translateX(-250px);
 }
 
-@media (min-width: 769px) {
-  .sidebar.mobile-hidden {
-    transform: translateX(0);
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-250px);
   }
 }
 

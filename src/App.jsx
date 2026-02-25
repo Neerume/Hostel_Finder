@@ -16,12 +16,24 @@ import OwnerDashboard from './pages/dashboard/OwnerDashboard';
 import AddHostel from './pages/dashboard/AddHostel';
 import EditProfile from './pages/dashboard/EditProfile';
 import HostelDetails from './pages/dashboard/HostelDetails';
+import { useAuth } from './context/AuthContext';
+
+const Home = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/" replace />;
+
+  const role = user.role;
+  return <Navigate to={`/${role}/dashboard`} replace />;
+};
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/home" element={<Home />} />
 
         {/* Auth Routes */}
         <Route path="/login/:type" element={<Login />} />

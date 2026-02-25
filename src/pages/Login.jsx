@@ -20,10 +20,10 @@ const Login = () => {
         try {
             if (isOwner) {
                 await loginOwner(email, password);
-                navigate('/owner/dashboard');
+                navigate('/home');
             } else {
                 await loginUser(email, password);
-                navigate('/user/dashboard');
+                navigate('/home');
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
