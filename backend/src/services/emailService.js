@@ -61,7 +61,29 @@ const sendNewPasswordEmail = async (to, newPassword) => {
     }
 };
 
+const sendEmail = async ({ to, subject, text, html }) => {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_FROM,
+            to,
+            subject,
+            text,
+            html: html || `<p>${text}</p>`
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: %s', info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending email:', error);
+        // We don't necessarily want to throw and break the whole process if email fails 
+        // in a non-critical flow like booking status update, but for now we follow the existing pattern.
+        throw new Error('Could not send email notification.');
+    }
+};
+
 module.exports = {
     sendOTP,
-    sendNewPasswordEmail
+    sendNewPasswordEmail,
+    sendEmail
 };

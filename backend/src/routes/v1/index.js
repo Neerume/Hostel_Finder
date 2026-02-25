@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./authRoutes');
 const hostelRoutes = require('./hostelRoutes');
+const bookingRoutes = require('./bookingRoutes');
 
 const router = express.Router();
 
@@ -9,11 +10,8 @@ const defaultRoutes = [
         path: '/auth',
         route: authRoutes,
     },
-    // Placeholders for other routes
-    // { path: '/users', route: userRoutes },
-    // { path: '/owners', route: ownerRoutes },
     { path: '/hostels', route: hostelRoutes },
-    // { path: '/bookings', route: bookingRoutes },
+    { path: '/bookings', route: bookingRoutes },
 ];
 
 defaultRoutes.forEach((route) => {

@@ -50,9 +50,18 @@ const OwnerDashboard = () => {
 
     return (
         <div>
-            <div style={{ marginBottom: 'var(--spacing-6)' }}>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: 'var(--spacing-2)' }}>Overview Dashboard</h2>
-                <p style={{ color: 'var(--text-secondary)' }}>Welcome back! Here is what's happening today.</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-6)' }}>
+                <div>
+                    <h2 style={{ fontSize: '1.5rem', marginBottom: 'var(--spacing-2)' }}>Overview Dashboard</h2>
+                    <p style={{ color: 'var(--text-secondary)' }}>Welcome back! Here is what's happening today.</p>
+                </div>
+                <button
+                    className="btn btn-outline"
+                    onClick={() => navigate('/owner/bookings')}
+                    style={{ gap: '8px' }}
+                >
+                    <Users size={18} /> Manage Bookings
+                </button>
             </div>
 
             {/* Stats Cards */}
@@ -78,7 +87,11 @@ const OwnerDashboard = () => {
                     </div>
                 </div>
 
-                <div className="card" style={{ padding: 'var(--spacing-5)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+                <div
+                    className="card card-hover"
+                    onClick={() => navigate('/owner/bookings')}
+                    style={{ padding: 'var(--spacing-5)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', cursor: 'pointer' }}
+                >
                     <div style={{ padding: '12px', background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', borderRadius: '50%' }}>
                         <Users size={24} />
                     </div>

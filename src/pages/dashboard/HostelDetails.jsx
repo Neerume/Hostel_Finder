@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import {
     ArrowLeft, MapPin, Phone, Mail, BedDouble,
     CheckCircle2, Wifi, Shield, Star, ChevronLeft, ChevronRight, Users
@@ -66,6 +67,7 @@ const ContactRow = ({ icon, label, value }) => (
 const HostelDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [hostel, setHostel] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -332,12 +334,17 @@ const HostelDetails = () => {
                             </p>
                         </div>
 
-                        <button className="btn btn-primary" style={{ width: '100%', marginTop: '16px', padding: '13px' }}>
-                            Book a Visit
-                        </button>
-                        <button className="btn btn-outline" style={{ width: '100%', marginTop: '10px', padding: '13px' }}>
-                            Book a Room
-                        </button>
+                        {user?.role !== 'owner' && (
+                            <>
+                                <button
+                                    className="btn btn-primary"
+                                    style={{ width: '100%', marginTop: '16px', padding: '13px' }}
+                                    onClick={() => navigate(`/user/book/${id}`)}
+                                >
+                                    Book a Visit
+                                </button>
+                            </>
+                        )}
                     </div>
 
                     {/* Quick stats */}

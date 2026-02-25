@@ -16,6 +16,8 @@ import OwnerDashboard from './pages/dashboard/OwnerDashboard';
 import AddHostel from './pages/dashboard/AddHostel';
 import EditProfile from './pages/dashboard/EditProfile';
 import HostelDetails from './pages/dashboard/HostelDetails';
+import BookHostel from './pages/dashboard/BookHostel';
+import MyBookings from './pages/dashboard/MyBookings';
 import { useAuth } from './context/AuthContext';
 
 const Home = () => {
@@ -46,6 +48,8 @@ function App() {
           <Route index element={<Navigate to="/user/dashboard" replace />} />
           <Route path="dashboard" element={<UserDashboard />} />
           <Route path="hostel/:id" element={<HostelDetails />} />
+          <Route path="book/:id" element={<BookHostel />} />
+          <Route path="bookings" element={<MyBookings />} />
           <Route path="profile" element={<EditProfile />} />
         </Route>
 
@@ -55,6 +59,7 @@ function App() {
           <Route path="dashboard" element={<OwnerDashboard />} />
           <Route path="add-hostel" element={<AddHostel />} />
           <Route path="hostel/:id" element={<HostelDetails />} />
+          <Route path="bookings" element={<MyBookings />} />
           <Route path="profile" element={<EditProfile />} />
         </Route>
 

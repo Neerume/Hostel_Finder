@@ -41,11 +41,13 @@ const DashboardLayout = ({ role }) => {
 
     const userLinks = [
         { to: '/user/dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
+        { to: '/user/bookings', icon: <CalendarCheck size={20} />, label: 'My Bookings' },
         { to: '/user/profile', icon: <User size={20} />, label: 'Edit Profile' },
     ];
 
     const ownerLinks = [
         { to: '/owner/dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
+        { to: '/owner/bookings', icon: <CalendarCheck size={20} />, label: 'Manage Bookings' },
         { to: '/owner/add-hostel', icon: <PlusCircle size={20} />, label: 'Add Hostel' },
         { to: '/owner/profile', icon: <User size={20} />, label: 'Edit Profile' },
     ];

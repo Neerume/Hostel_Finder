@@ -36,9 +36,18 @@ const UserDashboard = () => {
 
     return (
         <div>
-            <div style={{ marginBottom: 'var(--spacing-6)' }}>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: 'var(--spacing-2)' }}>Discover Hostels</h2>
-                <p style={{ color: 'var(--text-secondary)' }}>Find the perfect place that feels like home.</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-6)' }}>
+                <div>
+                    <h2 style={{ fontSize: '1.5rem', marginBottom: 'var(--spacing-2)' }}>Discover Hostels</h2>
+                    <p style={{ color: 'var(--text-secondary)' }}>Find the perfect place that feels like home.</p>
+                </div>
+                <button
+                    className="btn btn-outline"
+                    onClick={() => navigate('/user/bookings')}
+                    style={{ gap: '8px' }}
+                >
+                    <Filter size={18} /> My Bookings
+                </button>
             </div>
 
             {/* Search Bar */}
