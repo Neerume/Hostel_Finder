@@ -8,7 +8,7 @@ const HostelCard = ({ hostel, isOwner, onBookVisit, onBookRoom, onViewDetails })
                 style={{
                     height: '200px',
                     background: 'var(--background)',
-                    backgroundImage: `url(${hostel.image || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop'})`,
+                    backgroundImage: `url("${hostel.image || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop'}")`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                 }}
@@ -49,33 +49,12 @@ const HostelCard = ({ hostel, isOwner, onBookVisit, onBookRoom, onViewDetails })
                 </div>
 
                 <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'auto' }}>
-                    {isOwner ? (
-                        <>
-                            <button
-                                className="btn btn-primary w-full"
-                                onClick={() => onViewDetails(hostel.id)}
-                            >
-                                View Details
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button
-                                className="btn btn-outline"
-                                style={{ flex: 1, fontSize: '0.875rem', padding: '8px' }}
-                                onClick={() => onBookVisit(hostel.id)}
-                            >
-                                Book Visit
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                style={{ flex: 1, fontSize: '0.875rem', padding: '8px' }}
-                                onClick={() => onBookRoom(hostel.id)}
-                            >
-                                Book Room
-                            </button>
-                        </>
-                    )}
+                    <button
+                        className="btn btn-primary w-full"
+                        onClick={() => onViewDetails(hostel.id)}
+                    >
+                        View Details
+                    </button>
                 </div>
             </div>
         </div>

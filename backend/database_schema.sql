@@ -41,8 +41,11 @@ CREATE TABLE IF NOT EXISTS hostels (
     rules TEXT,
     number_of_rooms INT NOT NULL,
     available_rooms INT NOT NULL,
+    price DECIMAL(10, 2),
     amenities JSON, -- Storing amenities as a JSON array for flexibility
-    hostel_image_url VARCHAR(500),
+    hostel_image_url JSON, -- Storing multiple image URLs as a JSON array
+    latitude DECIMAL(10, 7),
+    longitude DECIMAL(10, 7),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,

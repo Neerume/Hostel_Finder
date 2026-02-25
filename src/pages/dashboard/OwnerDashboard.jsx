@@ -1,23 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Home, Users, CheckCircle, TrendingUp } from 'lucide-react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import HostelCard from '../../components/HostelCard';
 
-const DUMMY_OWNER_HOSTELS = [
-    {
-        id: 101,
-        name: 'My Hostel A',
-        location: 'Sector 5, Downtown',
-        description: 'Fully furnished, AC rooms for students.',
-        price: 9000,
-        availableRooms: 2,
-        totalRooms: 30,
-        image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop'
-    }
-];
-
 const OwnerDashboard = () => {
+    const navigate = useNavigate();
+    const [hostels, setHostels] = useState([]);
+    const [stats, setStats] = useState({
+        totalHostels: 0,
+        availableRooms: 0,
+        activeBookings: 28, // Placeholder
+        monthlyRevenue: '₹1.2L' // Placeholder
+    });
+
+    useEffect(() => {
+        const fetchHostels = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await axios.get('http://localhost:5000/api/v1/hostels/my-hostels', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const fetchedHostels = res.data.data.hostels;
+                setHostels(fetchedHostels);
+
+                let availableRooms = 0;
+                fetchedHostels.forEach(h => {
+                    availableRooms += (h.available_rooms || 0);
+                });
+
+                setStats(prev => ({
+                    ...prev,
+                    totalHostels: fetchedHostels.length,
+                    availableRooms
+                }));
+            } catch (error) {
+                console.error("Failed to fetch hostels:", error);
+            }
+        };
+
+        fetchHostels();
+    }, []);
+
     const handleViewDetails = (id) => {
-        alert(`View details for hostel ID: ${id}`);
+        navigate(`/owner/hostel/${id}`);
     };
 
     return (
@@ -36,7 +64,7 @@ const OwnerDashboard = () => {
                     </div>
                     <div>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 500 }}>Total Hostels</p>
-                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>1</h3>
+                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>{stats.totalHostels}</h3>
                     </div>
                 </div>
 
@@ -46,7 +74,7 @@ const OwnerDashboard = () => {
                     </div>
                     <div>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 500 }}>Available Rooms</p>
-                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>2</h3>
+                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>{stats.availableRooms}</h3>
                     </div>
                 </div>
 
@@ -56,7 +84,7 @@ const OwnerDashboard = () => {
                     </div>
                     <div>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 500 }}>Active Bookings</p>
-                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>28</h3>
+                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>{stats.activeBookings}</h3>
                     </div>
                 </div>
 
@@ -66,7 +94,7 @@ const OwnerDashboard = () => {
                     </div>
                     <div>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 500 }}>Monthly Revenue</p>
-                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>₹1.2L</h3>
+                        <h3 style={{ fontSize: '1.5rem', margin: 0 }}>{stats.monthlyRevenue}</h3>
                     </div>
                 </div>
 
@@ -75,14 +103,35 @@ const OwnerDashboard = () => {
             {/* Hostels List */}
             <h3 style={{ fontSize: '1.25rem', marginBottom: 'var(--spacing-4)' }}>My Properties</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--spacing-6)' }}>
-                {DUMMY_OWNER_HOSTELS.map(hostel => (
-                    <HostelCard
-                        key={hostel.id}
-                        hostel={hostel}
-                        isOwner={true}
-                        onViewDetails={handleViewDetails}
-                    />
-                ))}
+                {hostels.length === 0 ? (
+                    <p>No hostels found. Add one to get started!</p>
+                ) : (
+                    hostels.map(hostel => (
+                        <HostelCard
+                            key={hostel.hostel_id}
+                            hostel={{
+                                ...hostel,
+                                id: hostel.hostel_id,
+                                location: hostel.address,
+                                image: (() => {
+                                    // hostel_image_url is a JSON array of relative paths
+                                    const urls = hostel.hostel_image_url;
+                                    const first = Array.isArray(urls) && urls.length > 0
+                                        ? urls[0]
+                                        : (typeof urls === 'string' && urls ? urls : null);
+                                    if (!first) return 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop';
+                                    // If it's already a full URL, use it directly
+                                    return first.startsWith('http') ? first : `http://localhost:5000${first}`;
+                                })(),
+                                totalRooms: hostel.number_of_rooms,
+                                availableRooms: hostel.available_rooms,
+                                price: hostel.price || 0
+                            }}
+                            isOwner={true}
+                            onViewDetails={handleViewDetails}
+                        />
+                    ))
+                )}
             </div>
         </div>
     );

@@ -15,6 +15,7 @@ import UserDashboard from './pages/dashboard/UserDashboard';
 import OwnerDashboard from './pages/dashboard/OwnerDashboard';
 import AddHostel from './pages/dashboard/AddHostel';
 import EditProfile from './pages/dashboard/EditProfile';
+import HostelDetails from './pages/dashboard/HostelDetails';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/user" element={<DashboardLayout role="user" />}>
           <Route index element={<Navigate to="/user/dashboard" replace />} />
           <Route path="dashboard" element={<UserDashboard />} />
+          <Route path="hostel/:id" element={<HostelDetails />} />
           <Route path="profile" element={<EditProfile />} />
         </Route>
 
@@ -40,6 +42,7 @@ function App() {
           <Route index element={<Navigate to="/owner/dashboard" replace />} />
           <Route path="dashboard" element={<OwnerDashboard />} />
           <Route path="add-hostel" element={<AddHostel />} />
+          <Route path="hostel/:id" element={<HostelDetails />} />
           <Route path="profile" element={<EditProfile />} />
         </Route>
 
