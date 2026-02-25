@@ -1,8 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Building2, ShieldCheck, CalendarCheck, LayoutDashboard } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Building2, ShieldCheck, CalendarCheck, LayoutDashboard, Loader2 } from 'lucide-react';
+import api from '../utils/api';
+import HostelCard from '../components/HostelCard';
 
 const Landing = () => {
+    const navigate = useNavigate();
+    const [hostels, setHostels] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchHostels = async () => {
+            try {
+                const res = await api.get('/hostels');
+                setHostels(res.data.data.hostels.slice(0, 6)); // Show top 6
+            } catch (error) {
+                console.error("Failed to fetch hostels:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchHostels();
+    }, []);
+
+    const handleViewDetails = (id) => {
+        navigate('/login/user');
+    };
+
     return (
         <div className="landing-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             {/* Navbar equivalent for landing */}
@@ -35,8 +59,8 @@ const Landing = () => {
                 {/* Features Section */}
                 <section style={{ padding: '80px 20px', maxWidth: '1200px', margin: '0 auto' }}>
                     <h2 className="text-center mb-8" style={{ fontSize: '2rem' }}>Why choose HostelFinder?</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-6)' }}>
-
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--spacing-6)' }}>
+                        {/* Features cards... */}
                         <div className="card text-center" style={{ padding: 'var(--spacing-6)' }}>
                             <div style={{ display: 'flex', justifyContent: 'center', color: 'var(--primary)', marginBottom: 'var(--spacing-4)' }}>
                                 <Building2 size={48} />
@@ -68,7 +92,54 @@ const Landing = () => {
                             <h3 className="mb-2">Owner Dashboard</h3>
                             <p className="text-muted">Comprehensive tools for owners to track bookings, availability, and revenue.</p>
                         </div>
+                    </div>
+                </section>
 
+                {/* New: Featured Hostels Section */}
+                <section style={{ padding: '80px 20px', backgroundColor: 'var(--surface-alt)' }}>
+                    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                        <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-8)' }}>
+                            <h2 style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>Featured Hostels</h2>
+                            <p style={{ color: 'var(--text-secondary)' }}>Explore some of our top-rated accommodations.</p>
+                        </div>
+
+                        {loading ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+                                <Loader2 className="animate-spin" size={32} color="var(--primary)" />
+                            </div>
+                        ) : (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--spacing-6)' }}>
+                                {hostels.map(hostel => (
+                                    <HostelCard
+                                        key={hostel.hostel_id}
+                                        hostel={{
+                                            ...hostel,
+                                            id: hostel.hostel_id,
+                                            location: hostel.address,
+                                            image: (() => {
+                                                const urls = hostel.hostel_image_url;
+                                                const first = Array.isArray(urls) && urls.length > 0
+                                                    ? urls[0]
+                                                    : (typeof urls === 'string' && urls ? urls : null);
+                                                if (!first) return 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop';
+                                                return first.startsWith('http') ? first : `http://localhost:5000${first}`;
+                                            })(),
+                                            totalRooms: hostel.number_of_rooms,
+                                            availableRooms: hostel.available_rooms,
+                                            price: hostel.price || 0
+                                        }}
+                                        isGuest={true}
+                                        onViewDetails={handleViewDetails}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        <div style={{ textAlign: 'center', marginTop: 'var(--spacing-8)' }}>
+                            <Link to="/login/user" className="btn btn-outline" style={{ padding: '12px 32px' }}>
+                                View All Hostels
+                            </Link>
+                        </div>
                     </div>
                 </section>
             </main>

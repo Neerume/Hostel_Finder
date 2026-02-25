@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapPin, Users, CheckCircle2 } from 'lucide-react';
 
-const HostelCard = ({ hostel, isOwner, onBookVisit, onBookRoom, onViewDetails }) => {
+const HostelCard = ({ hostel, isOwner, onBookVisit, onBookRoom, onViewDetails, isGuest }) => {
     return (
         <div className="card card-hover" style={{ display: 'flex', flexDirection: 'column' }}>
             <div
@@ -53,7 +53,7 @@ const HostelCard = ({ hostel, isOwner, onBookVisit, onBookRoom, onViewDetails })
                         className="btn btn-primary w-full"
                         onClick={() => onViewDetails(hostel.id)}
                     >
-                        View Details
+                        {isGuest ? 'Login to View' : 'View Details'}
                     </button>
                 </div>
             </div>
