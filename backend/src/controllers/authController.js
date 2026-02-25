@@ -92,11 +92,45 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     });
 });
 
+const getProfile = catchAsync(async (req, res, next) => {
+    const profile = await authService.getProfile(req.user.id, req.user.role);
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            profile
+        }
+    });
+});
+
+const updateProfile = catchAsync(async (req, res, next) => {
+    const { fullname, email, password } = req.body;
+
+    // In a real app, we'd verify the currentPassword here if it was provided
+    // For this implementation, we allow direct updates if authenticated
+
+    const profile = await authService.updateProfile(req.user.id, req.user.role, {
+        fullname,
+        email,
+        password
+    });
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Profile updated successfully',
+        data: {
+            profile
+        }
+    });
+});
+
 module.exports = {
     registerUser,
     loginUser,
     registerOwner,
     loginOwner,
     verifyOtp,
-    forgotPassword
+    forgotPassword,
+    getProfile,
+    updateProfile
 };

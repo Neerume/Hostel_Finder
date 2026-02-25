@@ -8,6 +8,14 @@ const getUserByEmail = async (email) => {
     return rows[0];
 };
 
+const getUserById = async (id) => {
+    const [rows] = await pool.query(
+        'SELECT user_id as id, fullname, email, is_verified, created_at FROM users WHERE user_id = ? AND deleted_at IS NULL',
+        [id]
+    );
+    return rows[0];
+};
+
 const createUser = async (userData) => {
     const { fullname, email, password, otp_code, otp_expires_at } = userData;
     const [result] = await pool.query(
@@ -34,9 +42,38 @@ const updatePassword = async (email, passwordHash) => {
     return result;
 };
 
+const updateUser = async (id, updateData) => {
+    const fields = [];
+    const values = [];
+
+    if (updateData.fullname) {
+        fields.push('fullname = ?');
+        values.push(updateData.fullname);
+    }
+    if (updateData.email) {
+        fields.push('email = ?');
+        values.push(updateData.email);
+    }
+    if (updateData.password_hash) {
+        fields.push('password_hash = ?');
+        values.push(updateData.password_hash);
+    }
+
+    if (fields.length === 0) return null;
+
+    values.push(id);
+    const [result] = await pool.query(
+        `UPDATE users SET ${fields.join(', ')} WHERE user_id = ?`,
+        values
+    );
+    return result;
+};
+
 module.exports = {
     getUserByEmail,
+    getUserById,
     createUser,
     savePasswordResetOtp,
-    updatePassword
+    updatePassword,
+    updateUser
 };

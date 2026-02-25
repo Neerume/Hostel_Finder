@@ -102,10 +102,43 @@ const requestPasswordReset = async (email) => {
     await emailService.sendNewPasswordEmail(email, newPassword);
 };
 
+const getProfile = async (id, role) => {
+    if (role === 'user') {
+        const user = await userModel.getUserById(id);
+        if (!user) throw new AppError('User not found', 404);
+        return user;
+    } else {
+        const owner = await ownerModel.getOwnerById(id);
+        if (!owner) throw new AppError('Owner not found', 404);
+        return owner;
+    }
+};
+
+const updateProfile = async (id, role, updateData) => {
+    // 1. If password is being updated, hash it
+    if (updateData.password) {
+        updateData.password_hash = await bcrypt.hash(updateData.password, 12);
+        delete updateData.password;
+    }
+
+    // 2. Perform update based on role
+    if (role === 'user') {
+        const result = await userModel.updateUser(id, updateData);
+        if (!result) throw new AppError('Update failed', 400);
+        return await userModel.getUserById(id);
+    } else {
+        const result = await ownerModel.updateOwner(id, updateData);
+        if (!result) throw new AppError('Update failed', 400);
+        return await ownerModel.getOwnerById(id);
+    }
+};
+
 module.exports = {
     createUser,
     createOwner,
     authenticateUserEmailPassword,
     authenticateOwnerEmailPassword,
-    requestPasswordReset
+    requestPasswordReset,
+    getProfile,
+    updateProfile
 };

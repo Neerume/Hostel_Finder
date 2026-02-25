@@ -8,6 +8,14 @@ const getOwnerByEmail = async (email) => {
     return rows[0];
 };
 
+const getOwnerById = async (id) => {
+    const [rows] = await pool.query(
+        'SELECT owner_id as id, fullname, email, is_verified, created_at FROM owners WHERE owner_id = ? AND deleted_at IS NULL',
+        [id]
+    );
+    return rows[0];
+};
+
 const createOwner = async (ownerData) => {
     const { fullname, email, password, otp_code, otp_expires_at } = ownerData;
     const [result] = await pool.query(
@@ -34,9 +42,38 @@ const updatePassword = async (email, passwordHash) => {
     return result;
 };
 
+const updateOwner = async (id, updateData) => {
+    const fields = [];
+    const values = [];
+
+    if (updateData.fullname) {
+        fields.push('fullname = ?');
+        values.push(updateData.fullname);
+    }
+    if (updateData.email) {
+        fields.push('email = ?');
+        values.push(updateData.email);
+    }
+    if (updateData.password_hash) {
+        fields.push('password_hash = ?');
+        values.push(updateData.password_hash);
+    }
+
+    if (fields.length === 0) return null;
+
+    values.push(id);
+    const [result] = await pool.query(
+        `UPDATE owners SET ${fields.join(', ')} WHERE owner_id = ?`,
+        values
+    );
+    return result;
+};
+
 module.exports = {
     getOwnerByEmail,
+    getOwnerById,
     createOwner,
     savePasswordResetOtp,
-    updatePassword
+    updatePassword,
+    updateOwner
 };
